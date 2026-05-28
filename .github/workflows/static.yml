@@ -1,0 +1,59 @@
+name: Check, Merge and Deploy Geofeed
+
+on:
+  push:
+    branches: ["main"] # 如果你的默认分支叫 master，请改成 master
+  workflow_dispatch:
+
+permissions:
+  contents: write    # 允许脚本把合并后的新文件推送到仓库
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps:deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Check and Merge Geofeed
+        run: |
+          python .github/workflows/merge_geofeed.py
+
+      - name: Commit & Push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/geofeed.csv
+          if git diff --staged --quiet; then
+            echo "No changes in geofeed.csv"
+          else
+            git commit -m "auto: update geofeed.csv from data directory"
+            git push
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 🌟 核心点：这里指定只发布 public 文件夹
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './public'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
