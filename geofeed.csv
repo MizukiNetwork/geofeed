@@ -1,5 +1,3 @@
-# Geofeed Community Aggregation by BRNET
-
 44.32.191.0/24,HK,,,
 44.32.191.6/32,HK,,, # 香港MD IXVM
 44.32.191.7/32,CN,CN-ZJ,Hangzhou, # 杭州骨干节点
@@ -16,3 +14,8 @@
 44.32.191.96/28,CN,CN-JL,Changchun, # 长春理工大学
 44.32.191.112/28,CN,CN-JL,Changchun, # 长春朝阳
 44.32.191.128/28,CN,CN-JL,Antu, # 吉林延边-郑大丽专用
+
+
+2406:840:e600::/44,CN,CN-JL,Changchun, 
+2406:840:e600::/45,CN,CN-ZJ,Hangzhou,
+2a0f:1cc5:10::/44,HK,,,
